@@ -36,21 +36,17 @@ def main():
         #  more checks for player inputs
         #  update the game world
 
-        # display.flip() should always be at the end to refresh the screen
-        screen.fill("black")
- 
-
-        # refresh player object
-        player_obj.draw(screen)
-
-
-        pygame.display.flip()
+        player_obj.update(dt)
+  
+        screen.fill("black")  # display.flip() should always be at the end to refresh the screen
+        player_obj.draw(screen) # refresh player object
+        pygame.display.flip() # flips the pointers of back buffer we draw in - to the front buffer shown
 
         # limits framerate to 60 fps and set dt to amount of time since last it was called in seconds
-        dt=clock_speed.tick(60)/1000 
+        dt = clock_speed.tick(60)/1000 
 
         # limits framerate to 60 fps and set dt to amount of time since last it was called in seconds
-        dt=clock_speed.tick(60)/1000 
+        dt = clock_speed.tick(60)/1000 
 
 if __name__ == "__main__":
     main()
