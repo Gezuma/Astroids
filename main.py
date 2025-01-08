@@ -13,14 +13,15 @@ def main():
     pygame.init()
     clock_speed = pygame.time.Clock()  # object created to later set FPS
     dt = 0
-    x = constants.SCREEN_WIDTH / 2
-    y = constants.SCREEN_HEIGHT / 2
     
     # sets the display size for the game
     screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
 
-    player_obj = player.Player(x,y)
-
+    # Groups, containers and instances
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    player.Player.containers = (updatable, drawable) # make all future instance of Player join the two groups in this container
+    player_obj = player.Player(constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2)
 
     # Game loop
     while True:
@@ -36,10 +37,14 @@ def main():
         #  more checks for player inputs
         #  update the game world
 
-        player_obj.update(dt)
-  
-        screen.fill("black")  # display.flip() should always be at the end to refresh the screen
-        player_obj.draw(screen) # refresh player object
+        for updates in updatable:
+            updates.update(dt) # each obj instance added to the updatable group is updated # player_obj.update(dt)
+
+        screen.fill("black")  # backgroup
+        
+        for draws in drawable:
+            draws.draw(screen) # each obj instance added to the drawable group is drawn  # player_obj.draw(screen) # refresh player object
+        
         pygame.display.flip() # flips the pointers of back buffer we draw in - to the front buffer shown
 
         # limits framerate to 60 fps and set dt to amount of time since last it was called in seconds
