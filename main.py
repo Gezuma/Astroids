@@ -7,6 +7,8 @@ import pygame
 import constants
 
 import player
+import asteroid
+import asteroidfield
 
 def main():
     # initializing all pygame modules that can be initialized without arguments etc.
@@ -20,8 +22,16 @@ def main():
     # Groups, containers and instances
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+    asteroidfields = pygame.sprite.Group()
+    
     player.Player.containers = (updatable, drawable) # make all future instance of Player join the two groups in this container
+    asteroid.Asteroid.containers = (updatable, drawable, asteroids)
+    asteroidfield.AsteroidField.containers = (updatable)
+
     player_obj = player.Player(constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2)
+    asteroidfield_obj = asteroidfield.AsteroidField()
+
 
     # Game loop
     while True:
