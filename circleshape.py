@@ -1,9 +1,13 @@
+# Standard library imports
+from abc import ABC, abstractmethod
+
+# Third-party imports
 import pygame
 
 # Base class for game objects
-class CircleShape(pygame.sprite.Sprite):
+class CircleShape(pygame.sprite.Sprite, ABC):
     def __init__(self, x, y, radius):
-        # we will be using this later
+        # We will be using this later
         if hasattr(self, "containers"):
             super().__init__(self.containers)
         else:
@@ -13,10 +17,13 @@ class CircleShape(pygame.sprite.Sprite):
         self.velocity = pygame.Vector2(0, 0)
         self.radius = radius
 
+    @abstractmethod
     def draw(self, screen):
-        # sub-classes must override
         pass
 
+    @abstractmethod
     def update(self, dt):
-        # sub-classes must override
         pass
+
+    def collision_detect(self, other_circle):
+        return self.position.distance_to(other_circle.position) <= (self.radius + other_circle.radius)

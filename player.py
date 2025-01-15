@@ -1,5 +1,8 @@
+# Third-party imports
+import pygame 
+
+# Local imports
 import circleshape
-import pygame #  technically also avaible from former import with a circleshape. infront, but I think that makes it harder to read
 import constants
 
 class Player(circleshape.CircleShape):
@@ -7,7 +10,6 @@ class Player(circleshape.CircleShape):
     super().__init__(x, y, constants.PLAYER_RADIUS)
     self.rotation = 0
 
-  # in the player class
   def triangle(self):
     forward = pygame.Vector2(0, 1).rotate(self.rotation)
     right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5

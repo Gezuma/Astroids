@@ -1,67 +1,64 @@
-# this allows us to use code from
-# the open-source pygame library
-# throughout this file
+# Standard library imports
+import sys
+
+# Third-party imports
 import pygame
 
-# this is where constants "variables" are assigned. Constants like SCREENWIDTH, ASTRIOD_MIN_RADIOS and ASTROID_SPAWN_RATE etc.
-import constants
-
+# Local imports
+import constants # Game configuration constants
 import player
 import asteroid
 import asteroidfield
+import circleshape
 
 def main():
-    # initializing all pygame modules that can be initialized without arguments etc.
+    # Initializing all pygame modules that can be initialized without arguments etc.
     pygame.init()
     clock_speed = pygame.time.Clock()  # object created to later set FPS
     dt = 0
     
-    # sets the display size for the game
+    # Sets the display size for the game
     screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
 
-    # Groups, containers and instances
+    # Set up groups and containers
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     asteroidfields = pygame.sprite.Group()
     
-    player.Player.containers = (updatable, drawable) # make all future instance of Player join the two groups in this container
+    player.Player.containers = (updatable, drawable) 
     asteroid.Asteroid.containers = (updatable, drawable, asteroids)
-    asteroidfield.AsteroidField.containers = (updatable)
+    asteroidfield.AsteroidField.containers = updatable
 
+    # Initialize game objects
     player_obj = player.Player(constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2)
     asteroidfield_obj = asteroidfield.AsteroidField()
 
-
     # Game loop
     while True:
-        # this should be at the beginning of the game loop, so the game can be closed by pressing the close button "X" on the window
+        # Close the game by pressing the close button "X" in top right corner
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
 
-        # will be added later: 
-        #  more checks for player inputs
-        #  update the game world
-        # will be added later: 
-        #  more checks for player inputs
-        #  update the game world
-
+        # Update game state
         for updates in updatable:
-            updates.update(dt) # each obj instance added to the updatable group is updated # player_obj.update(dt)
+            updates.update(dt) # each obj instance added to the updatable group is updated 
 
-        screen.fill("black")  # backgroup
-        
+        # Check collisions
+        for asteroid_obj in asteroids:
+            if player_obj.collision_detect(asteroid_obj):
+                print("Game over!")
+                sys.exit()
+
+        # Render frame
+        screen.fill("black")  # background    
         for draws in drawable:
-            draws.draw(screen) # each obj instance added to the drawable group is drawn  # player_obj.draw(screen) # refresh player object
+            draws.draw(screen) # each obj instance added to the drawable group is drawn 
         
         pygame.display.flip() # flips the pointers of back buffer we draw in - to the front buffer shown
 
-        # limits framerate to 60 fps and set dt to amount of time since last it was called in seconds
-        dt = clock_speed.tick(60)/1000 
-
-        # limits framerate to 60 fps and set dt to amount of time since last it was called in seconds
-        dt = clock_speed.tick(60)/1000 
+        dt = clock_speed.tick(constants.FRAMES_PER_SECOND)/1000  # sets framerate 
 
 if __name__ == "__main__":
     main()
