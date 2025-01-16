@@ -10,24 +10,25 @@ import player
 import asteroid
 import asteroidfield
 import circleshape
+import shot
 
 def main():
     # Initializing all pygame modules that can be initialized without arguments etc.
     pygame.init()
     clock_speed = pygame.time.Clock()  # object created to later set FPS
     dt = 0
-    
-    # Sets the display size for the game
-    screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
+    screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))   # Sets the display size for the game
 
     # Set up groups and containers
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     asteroidfields = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
     
-    player.Player.containers = (updatable, drawable) 
-    asteroid.Asteroid.containers = (updatable, drawable, asteroids)
+    player.Player.containers =      (updatable, drawable)
+    shot.Shot.containers =          (updatable, drawable, shots) 
+    asteroid.Asteroid.containers =  (updatable, drawable, asteroids)
     asteroidfield.AsteroidField.containers = updatable
 
     # Initialize game objects
@@ -47,9 +48,14 @@ def main():
 
         # Check collisions
         for asteroid_obj in asteroids:
-            if player_obj.collision_detect(asteroid_obj):
+            if asteroid_obj.collision_detect(player_obj):
                 print("Game over!")
                 sys.exit()
+            for shot_obj in shots:
+                if shot_obj.collision_detect(asteroid_obj):
+                    shot_obj.kill()
+                    asteroid_obj.split()
+
 
         # Render frame
         screen.fill("black")  # background    
